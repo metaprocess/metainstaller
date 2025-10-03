@@ -1,0 +1,14 @@
+services:
+    base_os:
+        env_file: .env.baseimage
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: ${IMAGE_OS}:${IMAGE_TAG}
+
+    web_build:
+        env_file: .env.baseimage
+        build:
+            context: frontend
+            dockerfile: Dockerfile
+        image: ${IMAGE_OS_WEB}:${IMAGE_TAG_WEB}

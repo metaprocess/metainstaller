@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Manager - Complete Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+        
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        main {
+            padding: 2rem;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 { font-size: 2.2rem; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem; }
+        h2 { font-size: 1.8rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.3rem; }
+        h3 { font-size: 1.5rem; color: #e67e22; }
+        h4 { font-size: 1.3rem; color: #9b59b6; }
+        h5 { font-size: 1.1rem; }
+        h6 { font-size: 1rem; }
+        
+        p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        
+        .table-of-contents {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .table-of-contents h2 {
+            margin-top: 0;
+            border: none;
+            color: #495057;
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-list li {
+            margin: 0.5rem 0;
+        }
+        
+        .toc-list a {
+            color: #3498db;
+            text-decoration: none;
+            padding: 0.25rem 0;
+            display: block;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .toc-list a:hover {
+            background: #e3f2fd;
+            padding-left: 0.5rem;
+            color: #1976d2;
+        }
+        
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin: 0.5rem 0;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            position: relative;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: #e91e63;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            border-radius: 0;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #2d3748;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        em {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 3rem 0;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .endpoint {
+            background: #fff;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .endpoint-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .endpoint-method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 1rem;
+        }
+        
+        .method-get { background: #d4edda; color: #155724; }
+        .method-post { background: #cce5ff; color: #004085; }
+        .method-put { background: #fff3cd; color: #856404; }
+        .method-delete { background: #f8d7da; color: #721c24; }
+        
+        .project-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .file {
+            margin: 0.2rem 0;
+        }
+        
+        .directory {
+            font-weight: bold;
+            color: #e67e22;
+        }
+        
+        .component {
+            background: #e3f2fd;
+            border-left: 3px solid #3498db;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .api-section {
+            background: #fff8e1;
+            border-left: 3px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        footer {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            header {
+                padding: 1.5rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.25rem 0;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            pre {
+                padding: 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .copy-btn {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Docker Manager</h1>
+            <p class="subtitle">Complete Documentation for REST API and Web Interface</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#api-documentation">API Docs</a></li>
+                <li><a href="#frontend-documentation">Frontend Docs</a></li>
+                <li><a href="#project-structure">Project Structure</a></li>
+                <li><a href="#installation">Installation</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <div class="table-of-contents">
+                <h2>Table of Contents</h2>
+                <ul class="toc-list">
+                    <li><a href="#introduction">1. Introduction</a></li>
+                    <li><a href="#api-documentation">2. REST API Documentation</a>
+                        <ul>
+                            <li><a href="#authentication">2.1 Authentication</a></li>
+                            <li><a href="#docker-information">2.2 Docker Information</a></li>
+                            <li><a href="#installation-endpoints">2.3 Installation</a></li>
+                            <li><a href="#service-management">2.4 Service Management</a></li>
+                            <li><a href="#container-management">2.5 Container Management</a></li>
+                            <li><a href="#image-management">2.6 Image Management</a></li>
+                            <li><a href="#system-information">2.7 System Information</a></li>
+                            <li><a href="#docker-compose">2.8 Docker Compose</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#frontend-documentation">3. Frontend Web App Documentation</a>
+                        <ul>
+                            <li><a href="#frontend-structure">3.1 Project Structure</a></li>
+                            <li><a href="#frontend-components">3.2 Components</a></li>
+                            <li><a href="#frontend-services">3.3 Services</a></li>
+                            <li><a href="#frontend-types">3.4 Types</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#project-structure">4. Complete Project Structure</a></li>
+                    <li><a href="#installation">5. Installation and Setup</a></li>
+            <li><a href="#api-testing">6. API Testing</a></li>
+            <li><a href="#websocket-testing">7. WebSocket Testing</a></li>
+                </ul>
+            </div>
+            
+            <h1 id="introduction">1. Introduction</h1>
+            
+            <p>Welcome to the Docker Manager documentation. This comprehensive guide covers both the REST API backend and the React frontend web application.</p>
+            
+            <p>The Docker Manager is a complete solution for managing Docker installations, services, containers, images, and Docker Compose projects through a web interface. It provides a RESTful API for programmatic access and a user-friendly web interface for interactive management.</p>
+            
+            <h2>Key Features</h2>
+            <ul>
+                <li><strong>Full Docker Management</strong> - Install, configure, and manage Docker and Docker Compose</li>
+                <li><strong>Container Operations</strong> - Start, stop, restart, and monitor containers</li>
+                <li><strong>Image Management</strong> - Pull, build, tag, and remove Docker images</li>
+                <li><strong>Docker Compose Support</strong> - Manage multi-container applications</li>
+                <li><strong>System Information</strong> - Monitor Docker system resources and status</li>
+                <li><strong>Web Interface</strong> - Modern React-based user interface</li>
+                <li><strong>REST API</strong> - Complete programmatic access to all features</li>
+                <li><strong>Real-time Updates</strong> - WebSocket support for live status updates</li>
+            </ul>
+            
+            <h2>Technology Stack</h2>
+            <div class="component">
+                <h3>Backend (C++)</h3>
+                <ul>
+                    <li><strong>Language</strong>: C++17</li>
+                    <li><strong>Framework</strong>: Crow (C++ microframework)</li>
+                    <li><strong>Build System</strong>: CMake</li>
+                    <li><strong>JSON Library</strong>: json11</li>
+                    <li><strong>Process Management</strong>: Custom implementation</li>
+                </ul>
+            </div>
+            
+            <div class="component">
+                <h3>Frontend (React)</h3>
+                <ul>
+                    <li><strong>Framework</strong>: React 18 with TypeScript</li>
+                    <li><strong>State Management</strong>: React Query</li>
+                    <li><strong>Routing</strong>: React Router</li>
+                    <li><strong>HTTP Client</strong>: Axios</li>
+                    <li><strong>UI Components</strong>: Custom component library</li>
+                    <li><strong>Styling</strong>: Tailwind CSS</li>
+                    <li><strong>Build Tool</strong>: Vite</li>
+                </ul>
+            </div>
+            
+            <h1 id="api-documentation">2. REST API Documentation</h1>
+            
+            <p>The Docker Manager REST API provides programmatic access to all Docker management features. All endpoints are relative to the base URL.</p>
+            
+            <h2>Base URL</h2>
+            <pre><code>http://localhost:14040</code><button class="copy-btn">Copy</button></pre>
+            
+            <h2 id="authentication">2.1 Authentication</h2>
+            
+            <p>Some operations require sudo permissions. These endpoints require a valid sudo password to be provided in the request. If a sudo password is required but not provided or invalid, the API will return a 401 Unauthorized response.</p>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/test/sudo</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Tests and sets the sudo password.</p>
+                    
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "password": "your_sudo_password"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "Sudo access available"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <form id="sudo-form" style="margin: 1rem 0;">
+                        <div style="margin: 0.5rem 0;">
+                            <label for="sudo-password">Sudo Password:</label>
+                            <input type="password" id="sudo-password" placeholder="Enter your sudo password" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
+                        </div>
+                        <button type="submit" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Test Sudo</button>
+                    </form>
+                    <div id="sudo-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="docker-information">2.2 Docker Information Endpoints</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/info</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Retrieves detailed information about the Docker installation.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "installed": true,
+  "version": "28.3.1",
+  "api_version": "1.51",
+  "min_api_version": "1.24",
+  "git_commit": "38b7060",
+  "go_version": "go1.24.4",
+  "os": "linux",
+  "arch": "amd64",
+  "kernel_version": "5.6.13-100.fc30.x86_64",
+  "experimental": false,
+  "build_time": "Wed Jul  2 20:55:19 2025",
+  "error_message": ""
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="get-docker-info" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Get Docker Info</button>
+                    <div id="docker-info-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker-compose/info</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Retrieves information about Docker Compose installation.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "installed": true,
+  "version": "2.38.2",
+  "error_message": ""
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="get-docker-compose-info" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Get Docker Compose Info</button>
+                    <div id="docker-compose-info-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="installation-endpoints">2.3 Installation Endpoints</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/docker/install</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Installs Docker on the system. Requires sudo permissions.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "docker installation successfull.",
+  "status": "finished"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="install-docker" style="background: #27ae60; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Install Docker</button>
+                    <div id="install-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-delete">DELETE</span>
+                    <strong>/api/docker/uninstall</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Uninstalls Docker from the system. Requires sudo permissions.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "Docker uninstalled successfully"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="uninstall-docker" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Uninstall Docker</button>
+                    <div id="uninstall-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="service-management">2.4 Service Management Endpoints</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/docker/service/start</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Starts the Docker service. Requires sudo permissions.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "Docker service started successfully"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="start-service" style="background: #27ae60; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Start Docker Service</button>
+                    <div id="start-service-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/docker/service/stop</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Stops the Docker service. Requires sudo permissions.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "Docker service stopped successfully"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="stop-service" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Stop Docker Service</button>
+                    <div id="stop-service-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/docker/service/restart</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Restarts the Docker service. Requires sudo permissions.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "Docker service restarted successfully"
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="restart-service" style="background: #f39c12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Restart Docker Service</button>
+                    <div id="restart-service-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/service/status</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Retrieves the status of the Docker service.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "status": "● docker.service - Docker Application Container Engine\n   Loaded: loaded (/etc/systemd/system/docker.service; enabled; vendor preset: disabled)\n   Active: active (running) since Tue 2025-08-12 08:21:31 IRST; 13min ago\n     Docs: https://docs.docker.com\n Main PID: 1487 (dockerd)\n    Tasks: 32 (limit: 4915)\n   Memory: 194.4M\n   CGroup: /system.slice/docker.service\n           ├─1487 /usr/local/bin/dockerd -H fd://\n           └─1787 containerd --config /var/run/docker/containerd/containerd.toml\n\nAug 12 08:21:30 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:21:30.932735686+03:30\" level=info msg=\"Docker daemon\" commit=5beb93d containerd-snapshotter=false storage-driver=overlay2 version=28.3.1\nAug 12 08:21:30 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:21:30.932882700+03:30\" level=info msg=\"Initializing buildkit\"\nAug 12 08:21:31 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:21:31.345619173+03:30\" level=info msg=\"Completed buildkit initialization\"\nAug 12 08:21:31 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:21:31.348727160+03:30\" level=info msg=\"Daemon has completed initialization\"\nAug 12 08:21:31 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:21:31.348761994+03:30\" level=info msg=\"API listen on /run/docker.sock\"\nAug 12 08:21:31 fc30metaprocess systemd[1]: Started Docker Application Container Engine.\nAug 12 08:28:46 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:28:46.174706816+03:30\" level=info msg=\"shim disconnected\" id=2ff5d559deb48e497bf1a63865ceb0f21f9c182c9b382d03564b743b56dca88c namespace=moby\nAug 12 08:28:46 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:28:46.174734545+03:30\" level=warning msg=\"cleaning up after shim disconnected\" id=2ff5d559deb48e497bf1a63865ceb0f21f9c182c9b382d03564b743b56dca88c namespace=moby\nAug 12 08:28:46 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:28:46.174743776+03:30\" level=info msg=\"cleaning up dead shim\" namespace=moby\nAug 12 08:28:46 fc30metaprocess dockerd[1487]: time=\"2025-08-12T08:28:46.174840573+03:30\" level=info msg=\"ignoring event\" container=2ff5d559deb48e497bf1a63865ceb0f21f9c182c9b382d03564b743b56dca88c module=libcontainerd namespace=moby topic=/tasks/delete type=\"*events.TaskDelete\"\n",
+  "running": true
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="status-service" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Get Service Status</button>
+                    <div id="status-service-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="container-management">2.5 Container and Image Management</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/containers?all=true|false</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Lists Docker containers. Use the <code>all</code> parameter to include stopped containers.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "containers": [
+    {
+      "id": "a7292c54ffed",
+      "name": "docker-manager-ui-web-1",
+      "image": "docker-manager-ui-web",
+      "created": "2025-08-11 17:40:13 +0330 IRST",
+      "status": "Exited (1) 15 hours ago",
+      "ports": ""
+    }
+  ]
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="list-containers-all" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">List All Containers</button>
+                    <button id="list-containers-running" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">List Running Containers</button>
+                    <div id="containers-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/images</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Lists Docker images.</p>
+                    
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "images": [
+    {
+      "id": "5a3cb48a7b43",
+      "repository": "docker-manager-ui-web",
+      "tag": "latest",
+      "size": "52.5MB",
+      "created": "2025-08-11 17:39:49 +0330 IRST"
+    }
+  ]
+}</code><button class="copy-btn">Copy</button></pre>
+                    
+                    <h4>Test API:</h4>
+                    <button id="list-images" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">List Docker Images</button>
+                    <div id="images-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="system-information">2.6 System Information Endpoints</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/system/info</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Retrieves detailed Docker system information.</p>
+                    
+                    <h4>Test API:</h4>
+                    <button id="get-system-info" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Get System Info</button>
+                    <div id="system-info-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <strong>/api/docker/system/df</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Retrieves Docker disk usage information.</p>
+                    
+                    <h4>Test API:</h4>
+                    <button id="get-system-df" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Get Disk Usage</button>
+                    <div id="system-df-result" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                </div>
+            </div>
+            
+            <h2 id="docker-compose">2.7 Docker Compose Endpoints</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <strong>/api/docker/compose/projects</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Loads a Docker Compose file.</p>
+                    
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "compose_file_path": "/path/to/docker-compose.yml",
+  "project_name": "my-project",
+  "working_directory": "/path/to/working/directory"
+}</code><button class="copy-btn">Copy</button></pre>
+                </div>
+            </div>
+            
+            <h1 id="frontend-documentation">3. Frontend Web App Documentation</h1>
+            
+            <p>The Docker Manager frontend is a modern React application built with TypeScript that provides a user-friendly interface for managing Docker resources.</p>
+            
+            <h2 id="frontend-structure">3.1 Project Structure</h2>
+            
+            <div class="project-structure">
+                <div class="file"><span class="directory">frontend/</span></div>
+                <div class="file">  ├── package.json</div>
+                <div class="file">  ├── tsconfig.json</div>
+                <div class="file">  ├── vite.config.ts</div>
+                <div class="file">  ├── index.html</div>
+                <div class="file">  ├── <span class="directory">src/</span></div>
+                <div class="file">  │   ├── App.tsx</div>
+                <div class="file">  │   ├── main.tsx</div>
+                <div class="file">  │   ├── <span class="directory">components/</span></div>
+                <div class="file">  │   │   ├── Layout.tsx</div>
+                <div class="file">  │   │   ├── Dashboard.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">docker/</span></div>
+                <div class="file">  │   │   │   ├── Installation.tsx</div>
+                <div class="file">  │   │   │   └── ServiceManagement.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">containers/</span></div>
+                <div class="file">  │   │   │   └── ContainerManagement.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">images/</span></div>
+                <div class="file">  │   │   │   └── ImageManagement.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">compose/</span></div>
+                <div class="file">  │   │   │   └── ComposeManagement.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">system/</span></div>
+                <div class="file">  │   │   │   └── SystemInfo.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">logs/</span></div>
+                <div class="file">  │   │   │   └── LogViewer.tsx</div>
+                <div class="file">  │   │   └── <span class="directory">ui/</span></div>
+                <div class="file">  │   │       ├── Button.tsx</div>
+                <div class="file">  │   │       ├── Card.tsx</div>
+                <div class="file">  │   │       └── ...</div>
+                <div class="file">  │   ├── <span class="directory">services/</span></div>
+                <div class="file">  │   │   └── api.ts</div>
+                <div class="file">  │   ├── <span class="directory">hooks/</span></div>
+                <div class="file">  │   │   └── useApi.ts</div>
+                <div class="file">  │   ├── <span class="directory">types/</span></div>
+                <div class="file">  │   │   └── api.ts</div>
+                <div class="file">  │   └── <span class="directory">utils/</span></div>
+                <div class="file">  │       └── env.ts</div>
+                <div class="file">  └── <span class="directory">public/</span></div>
+                <div class="file">      └── assets...</div>
+            </div>
+            
+            <h2 id="frontend-components">3.2 Components</h2>
+            
+            <div class="component">
+                <h3>App Component</h3>
+                <p>The main application component that sets up routing and React Query.</p>
+                <pre><code>import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// ... other imports
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="installation" element={<Installation />} />
+            <Route path="service" element={<ServiceManagement />} />
+            <Route path="containers" element={<ContainerManagement />} />
+            <Route path="images" element={<ImageManagement />} />
+            <Route path="compose" element={<ComposeManagement />} />
+            <Route path="system" element={<SystemInfo />} />
+            <Route path="logs" element={<LogViewer />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
+  )
+}</code><button class="copy-btn">Copy</button></pre>
+            </div>
+            
+            <h2 id="frontend-services">3.3 Services</h2>
+            
+            <div class="component">
+                <h3>API Service</h3>
+                <p>The API service provides a type-safe interface to the backend REST API.</p>
+                <pre><code>export class DockerApiService {
+  // Docker Information
+  static async getDockerInfo(): Promise<DockerInfo> {
+    const response: AxiosResponse<DockerInfo> = await api.get(getApiUrl('/api/docker/info'))
+    return response.data
+  }
+
+  static async getDockerComposeInfo(): Promise<DockerComposeInfo> {
+    const response: AxiosResponse<DockerComposeInfo> = await api.get(getApiUrl('/api/docker-compose/info'))
+    return response.data
+  }
+
+  // Installation
+  static async installDocker(): Promise<ApiResponse> {
+    const response: AxiosResponse<ApiResponse> = await api.post(getApiUrl('/api/docker/install'))
+    return response.data
+  }
+
+  // ... other methods
+}</code><button class="copy-btn">Copy</button></pre>
+            </div>
+            
+            <h2 id="frontend-types">3.4 Types</h2>
+            
+            <div class="component">
+                <h3>TypeScript Types</h3>
+                <p>Strongly typed interfaces for API responses and requests.</p>
+                <pre><code>export interface DockerInfo {
+  installed: boolean
+  version?: string
+  api_version?: string
+  min_api_version?: string
+  git_commit?: string
+  go_version?: string
+  os?: string
+  arch?: string
+  kernel_version?: string
+  experimental?: boolean
+  build_time?: string
+  error_message?: string
+}
+
+export interface Container {
+  id: string
+  name: string
+  image: string
+  created: string
+  status: string
+  ports: string | any[]
+}
+
+export interface Image {
+  id: string
+  repository: string
+  tag: string
+  size: string
+  created: string
+}</code><button class="copy-btn">Copy</button></pre>
+            </div>
+            
+            <h1 id="project-structure">4. Complete Project Structure</h1>
+            
+            <div class="project-structure">
+                <div class="file"><span class="directory">container_installer_rest/</span></div>
+                <div class="file">  ├── CMakeLists.txt</div>
+                <div class="file">  ├── Makefile</div>
+                <div class="file">  ├── REST_API_Documentation.md</div>
+                <div class="file">  ├── FRONTEND_API_DOCS.md</div>
+                <div class="file">  ├── comprehensive_docs.html</div>
+                <div class="file">  ├── <span class="directory">src/</span></div>
+                <div class="file">  │   ├── main.cpp</div>
+                <div class="file">  │   ├── DockerManager.cpp</div>
+                <div class="file">  │   ├── DockerManager.h</div>
+                <div class="file">  │   ├── MarkdownToHtml.cpp</div>
+                <div class="file">  │   ├── MarkdownToHtml.h</div>
+                <div class="file">  │   ├── ProcessManager.cpp</div>
+                <div class="file">  │   ├── ProcessManager.h</div>
+                <div class="file">  │   ├── utils.cpp</div>
+                <div class="file">  │   ├── utils.h</div>
+                <div class="file">  │   ├── json11.cpp</div>
+                <div class="file">  │   ├── json11.hpp</div>
+                <div class="file">  │   └── ...</div>
+                <div class="file">  ├── <span class="directory">frontend/</span></div>
+                <div class="file">  │   ├── package.json</div>
+                <div class="file">  │   ├── tsconfig.json</div>
+                <div class="file">  │   ├── vite.config.ts</div>
+                <div class="file">  │   ├── index.html</div>
+                <div class="file">  │   ├── <span class="directory">src/</span></div>
+                <div class="file">  │   │   ├── App.tsx</div>
+                <div class="file">  │   │   ├── main.tsx</div>
+                <div class="file">  │   │   ├── <span class="directory">components/</span></div>
+                <div class="file">  │   │   ├── <span class="directory">services/</span></div>
+                <div class="file">  │   │   ├── <span class="directory">hooks/</span></div>
+                <div class="file">  │   │   ├── <span class="directory">types/</span></div>
+                <div class="file">  │   │   └── <span class="directory">utils/</span></div>
+                <div class="file">  │   └── <span class="directory">public/</span></div>
+                <div class="file">  ├── <span class="directory">resources/</span></div>
+                <div class="file">  │   ├── 7zzs</div>
+                <div class="file">  │   ├── docker-28.3.1.7z</div>
+                <div class="file">  │   └── ...</div>
+                <div class="file">  └── <span class="directory">Crow/</span> (Crow C++ framework)</div>
+            </div>
+            
+            <h1 id="installation">5. Installation and Setup</h1>
+            
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>Linux system (tested on Fedora 30)</li>
+                <li>C++17 compiler (GCC 9+)</li>
+                <li>CMake 3.10+</li>
+                <li>Node.js 16+</li>
+                <li>npm or yarn</li>
+            </ul>
+            
+            <h2>Backend Setup</h2>
+            <pre><code># Clone the repository
+git clone <repository-url>
+cd container_installer_rest
+
+# Build the project
+mkdir build
+cd build
+cmake ..
+make
+
+# Run the application
+./docker_manager</code><button class="copy-btn">Copy</button></pre>
+            
+            <h2>Frontend Setup</h2>
+            <pre><code># Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build</code><button class="copy-btn">Copy</button></pre>
+            
+            <h2>API Access</h2>
+            <p>Once the backend is running, the API will be available at:</p>
+            <pre><code>http://localhost:14040</code><button class="copy-btn">Copy</button></pre>
+            
+            <p>The web interface will be available at:</p>
+            <pre><code>http://localhost:5173</code><button class="copy-btn">Copy</button></pre>
+            
+            <h2>API Documentation</h2>
+            <p>Interactive API documentation is available at:</p>
+            <pre><code>http://localhost:14040/api/docs</code><button class="copy-btn">Copy</button></pre>
+            
+            <h1 id="api-testing">6. API Testing</h1>
+            
+            <p>Use the forms below to test the Docker Manager API directly from your browser.</p>
+            
+            <h1 id="websocket-testing">7. WebSocket Testing</h1>
+            
+            <p>Test the WebSocket functionality for real-time updates:</p>
+            
+            <div class="api-section">
+                <h2>WebSocket Connection</h2>
+                <div style="margin: 1rem 0;">
+                    <label for="websocket-url">WebSocket URL:</label>
+                    <input type="text" id="websocket-url" value="/ws" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
+                </div>
+                <button id="connect-websocket" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-right: 1rem;">Connect</button>
+                <button id="disconnect-websocket" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;" disabled>Disconnect</button>
+                <div id="websocket-status" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none;"></div>
+                
+                <h3 style="margin-top: 1rem;">Send Message</h3>
+                <div style="margin: 1rem 0;">
+                    <label for="websocket-message">Message:</label>
+                    <input type="text" id="websocket-message" placeholder="Enter message to send" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
+                </div>
+                <button id="send-websocket-message" style="background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;" disabled>Send</button>
+                
+                <h3 style="margin-top: 1rem;">Messages</h3>
+                <div id="websocket-messages" style="margin-top: 1rem; padding: 1rem; border-radius: 4px; background: #f8f9fa; height: 200px; overflow-y: auto; font-family: monospace; display: none;"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Docker Manager Documentation - Generated on August 13, 2025</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Add copy-to-clipboard functionality for code blocks
+        document.querySelectorAll('pre code').forEach(function(block) {
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.textContent = 'Copy';
+            button.onclick = function() {
+                navigator.clipboard.writeText(block.textContent);
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            };
+            block.parentNode.style.position = 'relative';
+            block.parentNode.appendChild(button);
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // API Testing Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sudo password testing
+            const sudoForm = document.getElementById('sudo-form');
+            if (sudoForm) {
+                sudoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const password = document.getElementById('sudo-password').value;
+                    testSudoPassword(password);
+                });
+            }
+            
+            // Docker information
+            const getDockerInfoBtn = document.getElementById('get-docker-info');
+            if (getDockerInfoBtn) {
+                getDockerInfoBtn.addEventListener('click', function() {
+                    getDockerInfo();
+                });
+            }
+            
+            const getDockerComposeInfoBtn = document.getElementById('get-docker-compose-info');
+            if (getDockerComposeInfoBtn) {
+                getDockerComposeInfoBtn.addEventListener('click', function() {
+                    getDockerComposeInfo();
+                });
+            }
+            
+            // Installation management
+            const installDockerBtn = document.getElementById('install-docker');
+            if (installDockerBtn) {
+                installDockerBtn.addEventListener('click', function() {
+                    installDocker();
+                });
+            }
+            
+            const uninstallDockerBtn = document.getElementById('uninstall-docker');
+            if (uninstallDockerBtn) {
+                uninstallDockerBtn.addEventListener('click', function() {
+                    uninstallDocker();
+                });
+            }
+            
+            // Service management
+            const startServiceBtn = document.getElementById('start-service');
+            if (startServiceBtn) {
+                startServiceBtn.addEventListener('click', function() {
+                    startService();
+                });
+            }
+            
+            const stopServiceBtn = document.getElementById('stop-service');
+            if (stopServiceBtn) {
+                stopServiceBtn.addEventListener('click', function() {
+                    stopService();
+                });
+            }
+            
+            const restartServiceBtn = document.getElementById('restart-service');
+            if (restartServiceBtn) {
+                restartServiceBtn.addEventListener('click', function() {
+                    restartService();
+                });
+            }
+            
+            const statusServiceBtn = document.getElementById('status-service');
+            if (statusServiceBtn) {
+                statusServiceBtn.addEventListener('click', function() {
+                    getServiceStatus();
+                });
+            }
+            
+            // Container management
+            const listContainersAllBtn = document.getElementById('list-containers-all');
+            if (listContainersAllBtn) {
+                listContainersAllBtn.addEventListener('click', function() {
+                    listContainers(true);
+                });
+            }
+            
+            const listContainersRunningBtn = document.getElementById('list-containers-running');
+            if (listContainersRunningBtn) {
+                listContainersRunningBtn.addEventListener('click', function() {
+                    listContainers(false);
+                });
+            }
+            
+            // Image management
+            const listImagesBtn = document.getElementById('list-images');
+            if (listImagesBtn) {
+                listImagesBtn.addEventListener('click', function() {
+                    listImages();
+                });
+            }
+            
+            // System information
+            const getSystemInfoBtn = document.getElementById('get-system-info');
+            if (getSystemInfoBtn) {
+                getSystemInfoBtn.addEventListener('click', function() {
+                    getSystemInfo();
+                });
+            }
+            
+            const getSystemDfBtn = document.getElementById('get-system-df');
+            if (getSystemDfBtn) {
+                getSystemDfBtn.addEventListener('click', function() {
+                    getSystemDf();
+                });
+            }
+            
+            // WebSocket testing
+            let websocket = null;
+            const connectWebsocketBtn = document.getElementById('connect-websocket');
+            const disconnectWebsocketBtn = document.getElementById('disconnect-websocket');
+            const sendWebsocketMessageBtn = document.getElementById('send-websocket-message');
+            
+            if (connectWebsocketBtn) {
+                connectWebsocketBtn.addEventListener('click', function() {
+                    const url = document.getElementById('websocket-url').value;
+                    connectWebsocket(url);
+                });
+            }
+            
+            if (disconnectWebsocketBtn) {
+                disconnectWebsocketBtn.addEventListener('click', function() {
+                    disconnectWebsocket();
+                });
+            }
+            
+            if (sendWebsocketMessageBtn) {
+                sendWebsocketMessageBtn.addEventListener('click', function() {
+                    const message = document.getElementById('websocket-message').value;
+                    sendWebsocketMessage(message);
+                });
+            }
+        });
+        
+        // Utility function to show results
+        function showResult(elementId, data, success = true) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = 'block';
+                element.style.backgroundColor = success ? '#d4edda' : '#f8d7da';
+                element.style.border = `1px solid ${success ? '#c3e6cb' : '#f5c6cb'}`;
+                element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+        }
+        
+        // Utility function to show WebSocket messages
+        function showWebsocketMessage(message, type = 'received') {
+            const messagesElement = document.getElementById('websocket-messages');
+            if (messagesElement) {
+                messagesElement.style.display = 'block';
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${message}`;
+                messageElement.style.color = type === 'sent' ? '#0066cc' : '#333333';
+                messagesElement.appendChild(messageElement);
+                messagesElement.scrollTop = messagesElement.scrollHeight;
+            }
+        }
+        
+        // Utility function to show WebSocket status
+        function showWebsocketStatus(message, success = true) {
+            const statusElement = document.getElementById('websocket-status');
+            if (statusElement) {
+                statusElement.style.display = 'block';
+                statusElement.style.backgroundColor = success ? '#d4edda' : '#f8d7da';
+                statusElement.style.border = `1px solid ${success ? '#c3e6cb' : '#f5c6cb'}`;
+                statusElement.textContent = message;
+            }
+        }
+        
+        // API Functions
+        function testSudoPassword(password) {
+            fetch('/api/test/sudo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('sudo-result', data, data.success);
+            })
+            .catch(error => {
+                showResult('sudo-result', { error: error.message }, false);
+            });
+        }
+        
+        function getDockerInfo() {
+            fetch('/api/docker/info')
+            .then(response => response.json())
+            .then(data => {
+                showResult('docker-info-result', data, data.installed !== false || !data.error_message);
+            })
+            .catch(error => {
+                showResult('docker-info-result', { error: error.message }, false);
+            });
+        }
+        
+        function getDockerComposeInfo() {
+            fetch('/api/docker-compose/info')
+            .then(response => response.json())
+            .then(data => {
+                showResult('docker-info-result', data, data.installed !== false || !data.error_message);
+            })
+            .catch(error => {
+                showResult('docker-info-result', { error: error.message }, false);
+            });
+        }
+        
+        function installDocker() {
+            fetch('/api/docker/install', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('install-result', data);
+            })
+            .catch(error => {
+                showResult('install-result', { error: error.message }, false);
+            });
+        }
+        
+        function uninstallDocker() {
+            if (!confirm('Are you sure you want to uninstall Docker? This action cannot be undone.')) {
+                return;
+            }
+            
+            fetch('/api/docker/uninstall', {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('install-result', data, data.success);
+            })
+            .catch(error => {
+                showResult('install-result', { error: error.message }, false);
+            });
+        }
+        
+        function startService() {
+            fetch('/api/docker/service/start', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('service-result', data, data.success);
+            })
+            .catch(error => {
+                showResult('service-result', { error: error.message }, false);
+            });
+        }
+        
+        function stopService() {
+            fetch('/api/docker/service/stop', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('service-result', data, data.success);
+            })
+            .catch(error => {
+                showResult('service-result', { error: error.message }, false);
+            });
+        }
+        
+        function restartService() {
+            fetch('/api/docker/service/restart', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('service-result', data, data.success);
+            })
+            .catch(error => {
+                showResult('service-result', { error: error.message }, false);
+            });
+        }
+        
+        function getServiceStatus() {
+            fetch('/api/docker/service/status')
+            .then(response => response.json())
+            .then(data => {
+                showResult('service-result', data, data.running !== false || !data.error_message);
+            })
+            .catch(error => {
+                showResult('service-result', { error: error.message }, false);
+            });
+        }
+        
+        function listContainers(all) {
+            const url = `/api/docker/containers?all=${all}`;
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                showResult('containers-result', data);
+            })
+            .catch(error => {
+                showResult('containers-result', { error: error.message }, false);
+            });
+        }
+        
+        function listImages() {
+            fetch('/api/docker/images')
+            .then(response => response.json())
+            .then(data => {
+                showResult('images-result', data);
+            })
+            .catch(error => {
+                showResult('images-result', { error: error.message }, false);
+            });
+        }
+        
+        function getSystemInfo() {
+            fetch('/api/docker/system/info')
+            .then(response => response.json())
+            .then(data => {
+                showResult('system-info-result', data);
+            })
+            .catch(error => {
+                showResult('system-info-result', { error: error.message }, false);
+            });
+        }
+        
+        function getSystemDf() {
+            fetch('/api/docker/system/df')
+            .then(response => response.json())
+            .then(data => {
+                showResult('system-df-result', data);
+            })
+            .catch(error => {
+                showResult('system-df-result', { error: error.message }, false);
+            });
+        }
+        
+        // WebSocket Functions
+        function connectWebsocket(url) {
+            if (websocket) {
+                websocket.close();
+            }
+            
+            try {
+                websocket = new WebSocket(url);
+                
+                websocket.onopen = function(event) {
+                    showWebsocketStatus('Connected to WebSocket server', true);
+                    document.getElementById('connect-websocket').disabled = true;
+                    document.getElementById('disconnect-websocket').disabled = false;
+                    document.getElementById('send-websocket-message').disabled = false;
+                    showWebsocketMessage('Connected to server');
+                };
+                
+                websocket.onmessage = function(event) {
+                    showWebsocketMessage(event.data);
+                };
+                
+                websocket.onclose = function(event) {
+                    showWebsocketStatus('Disconnected from WebSocket server', false);
+                    document.getElementById('connect-websocket').disabled = false;
+                    document.getElementById('disconnect-websocket').disabled = true;
+                    document.getElementById('send-websocket-message').disabled = true;
+                    showWebsocketMessage('Disconnected from server');
+                    websocket = null;
+                };
+                
+                websocket.onerror = function(event) {
+                    showWebsocketStatus('WebSocket error occurred', false);
+                    showWebsocketMessage('Error: ' + event.message);
+                };
+            } catch (error) {
+                showWebsocketStatus('Failed to connect: ' + error.message, false);
+            }
+        }
+        
+        function disconnectWebsocket() {
+            if (websocket) {
+                websocket.close();
+            }
+        }
+        
+        function sendWebsocketMessage(message) {
+            if (websocket && websocket.readyState === WebSocket.OPEN) {
+                websocket.send(message);
+                showWebsocketMessage(message, 'sent');
+                document.getElementById('websocket-message').value = '';
+            } else {
+                showWebsocketStatus('WebSocket is not connected', false);
+            }
+        }
+    </script>
+</body>
+</html>

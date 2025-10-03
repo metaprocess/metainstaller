@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Picker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .path-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .file-list {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .file-item:hover {
+            background-color: #f8f9fa;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .file-info {
+            flex-grow: 1;
+        }
+        .file-name {
+            font-weight: bold;
+        }
+        .file-details {
+            font-size: 12px;
+            color: #666;
+        }
+        .directory {
+            color: #007bff;
+        }
+        .file {
+            color: #28a745;
+        }
+        .size {
+            margin-left: 10px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .selected-file {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Picker</h1>
+        
+        <div class="controls">
+            <button id="homeBtn">Home</button>
+            <button id="upBtn">Up</button>
+        </div>
+        
+        <div class="path-display" id="currentPath">/</div>
+        
+        <div class="file-list" id="fileList">
+            <!-- File items will be populated here -->
+        </div>
+        
+        <div class="selected-file" id="selectedFile" style="display: none;">
+            <h3>Selected File:</h3>
+            <p id="selectedFileName"></p>
+            <button id="viewFileBtn">View File Content</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api/file';
+        let currentPath = '';
+        let selectedFile = null;
+
+        // DOM elements
+        const currentPathEl = document.getElementById('currentPath');
+        const fileListEl = document.getElementById('fileList');
+        const homeBtn = document.getElementById('homeBtn');
+        const upBtn = document.getElementById('upBtn');
+        const selectedFileEl = document.getElementById('selectedFile');
+        const selectedFileNameEl = document.getElementById('selectedFileName');
+        const viewFileBtn = document.getElementById('viewFileBtn');
+
+        // Event listeners
+        homeBtn.addEventListener('click', () => navigateTo(''));
+        upBtn.addEventListener('click', goUp);
+        viewFileBtn.addEventListener('click', viewFileContent);
+
+        // Initialize
+        loadDirectory(currentPath);
+
+        // Functions
+        function loadDirectory(path) {
+            currentPath = path;
+            updatePathDisplay();
+            updateUpButton();
+            
+            fetch(`${API_BASE}/list-detailed/${encodeURIComponent(path)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderFileList(data.entries);
+                    } else {
+                        alert('Error loading directory: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading directory');
+                });
+        }
+
+        function renderFileList(entries) {
+            fileListEl.innerHTML = '';
+            
+            if (entries.length === 0) {
+                fileListEl.innerHTML = '<div class="file-item"><em>Empty directory</em></div>';
+                return;
+            }
+            
+            entries.forEach(entry => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.dataset.name = entry.name;
+                fileItem.dataset.isDirectory = entry.is_directory;
+                
+                const icon = document.createElement('span');
+                icon.className = 'file-icon';
+                icon.textContent = entry.is_directory ? '📁' : '📄';
+                
+                const info = document.createElement('div');
+                info.className = 'file-info';
+                
+                const name = document.createElement('div');
+                name.className = 'file-name';
+                name.textContent = entry.name;
+                
+                const details = document.createElement('div');
+                details.className = 'file-details';
+                
+                if (entry.is_directory) {
+                    details.textContent = 'Directory';
+                } else {
+                    const size = formatFileSize(entry.size);
+                    const modified = entry.last_modified;
+                    details.textContent = `${size} | Modified: ${modified}`;
+                }
+                
+                info.appendChild(name);
+                info.appendChild(details);
+                
+                fileItem.appendChild(icon);
+                fileItem.appendChild(info);
+                
+                fileItem.addEventListener('click', () => handleFileClick(entry));
+                
+                fileListEl.appendChild(fileItem);
+            });
+        }
+
+        function handleFileClick(entry) {
+            if (entry.is_directory) {
+                // Navigate into the directory
+                const newPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+                loadDirectory(newPath);
+            } else {
+                // Select the file
+                selectedFile = {
+                    name: entry.name,
+                    path: currentPath ? `${currentPath}/${entry.name}` : entry.name,
+                    size: entry.size,
+                    lastModified: entry.last_modified
+                };
+                showSelectedFile();
+            }
+        }
+
+        function showSelectedFile() {
+            selectedFileNameEl.textContent = `${selectedFile.path} (${formatFileSize(selectedFile.size)})`;
+            selectedFileEl.style.display = 'block';
+        }
+
+        function viewFileContent() {
+            if (!selectedFile) return;
+            
+            fetch(`${API_BASE}/get/${encodeURIComponent(selectedFile.path)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Create a new window to display the file content
+                        const newWindow = window.open('', '_blank');
+                        newWindow.document.write(`
+                            <html>
+                                <head>
+                                    <title>File Content: ${selectedFile.name}</title>
+                                    <style>
+                                        body { font-family: monospace; margin: 20px; }
+                                        pre { white-space: pre-wrap; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <h2>File: ${selectedFile.name}</h2>
+                                    <pre>${escapeHtml(data.content)}</pre>
+                                </body>
+                            </html>
+                        `);
+                        newWindow.document.close();
+                    } else {
+                        alert('Error reading file: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error reading file');
+                });
+        }
+
+        function navigateTo(path) {
+            loadDirectory(path);
+            selectedFile = null;
+            selectedFileEl.style.display = 'none';
+        }
+
+        function goUp() {
+            if (currentPath === '') return;
+            
+            const parts = currentPath.split('/');
+            parts.pop();
+            const newPath = parts.join('/');
+            loadDirectory(newPath);
+            selectedFile = null;
+            selectedFileEl.style.display = 'none';
+        }
+
+        function updatePathDisplay() {
+            currentPathEl.textContent = currentPath || '/';
+        }
+
+        function updateUpButton() {
+            upBtn.disabled = currentPath === '';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+services:
+    web_build:
+        container_name: web_build
+        env_file:
+            - .env.baseimage
+        # build:
+        #     context: frontend
+        #     dockerfile: Dockerfile
+        image: ${IMAGE_OS_WEB}:${IMAGE_TAG_WEB}
+        working_dir: /build
+        volumes:
+            - ./frontend:/src:ro
+            - ./resources/7zzs:/bin/7zzs:ro
+            - ./resources:/resources:rw
+            # - ./frontend/dist:/app/dist:rw
+            # - ./frontend/node_modules:/app/node_modules:rw
+        command: >
+            /bin/bash -c '
+                set -euxo pipefail
+                rm -rf dist || echo "directory does not exists"
+                
+                rsync -a --exclude=node_modules --exclude=dist /src/ ./
+                echo "Building frontend..."
+                npm run build
+                rm -f /resources/web.7z || echo "file web.7z does not exists"
+                7zzs a /resources/web.7z dist
+                chown -R $(stat -c %u /src):$(stat -c %g /src) /resources/web.7z
+                echo "Build finished."
+            '
+        restart: "no"
+
+    builder:
+        container_name: ${IMAGE_OS}
+        env_file:
+            - .env.baseimage
+            - .env.version
+        # build:
+        #   context: .
+        #   dockerfile: Dockerfile
+        image: ${IMAGE_OS}:${IMAGE_TAG}
+        # Build runs as root; outputs are chowned to the host uid:gid detected via stat on /workspace
+        working_dir: /workspace
+        # user: "${UID:-1000}:${GID:-1000}"
+        volumes:
+            - ./:/workspace:rw
+
+        depends_on:
+            web_build:
+                condition: service_completed_successfully
+        command: >
+            /bin/bash -c '
+                set -euo pipefail
+                # set -x
+                rm -rf build_docker || echo "creating build directory"
+                # mkdir -p /src
+                cp -a /workspace /src
+                pushd /src
+                    mkdir -p build_docker
+                    
+                    cmake -S . -B build_docker -G "Unix Makefiles" \
+                        -DCMAKE_BUILD_TYPE=Release \
+                        -DCMAKE_CXX_STANDARD=17 \
+                        -DBUILD_SHARED_LIBS=OFF \
+                        -DCMAKE_EXE_LINKER_FLAGS="-static -static-libstdc++ -static-libgcc"
+                    
+                    cmake --build build_docker --parallel;
+                    chown -R $(stat -c %u /workspace):$(stat -c %g /workspace) build_docker || true
+                    cp -a build_docker/MetaInstaller /workspace/${APP_NAME}
+                    rm -rf build_docker
+                popd
+                resources/7zzs a ${APP_NAME}.7z ${APP_NAME}
+                chown -R $(stat -c %u /workspace):$(stat -c %g /workspace) ${APP_NAME} ${APP_NAME}.7z
+                echo -e "Build finished.\n----------------------- Now '${APP_NAME}' is available in project root -----------------------\n\n\n"
+                ls -lh ${APP_NAME}*
+
+                echo -e "\n\n\n"
+                
+            '
+        restart: "no"

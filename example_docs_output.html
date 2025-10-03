@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Manager REST API Documentation - Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            padding: 2rem;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+            line-height: 1.3;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 0.3rem;
+        }
+        
+        .endpoint {
+            background: #fff;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .endpoint-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .endpoint-method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 1rem;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            position: relative;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Docker Manager REST API Documentation</h1>
+            <p class="subtitle">Comprehensive API documentation for web developers</p>
+        </header>
+        <main>
+            <h2>Sample API Endpoint</h2>
+            
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method">GET</span>
+                    <strong>/api/docker/info</strong>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <p>Returns detailed information about the Docker installation.</p>
+                    
+                    <h4>Response Example:</h4>
+                    <pre><code>{
+  "installed": true,
+  "version": "24.0.0",
+  "api_version": "1.43",
+  "os": "linux",
+  "arch": "amd64"
+}</code><button class="copy-btn">Copy</button></pre>
+                </div>
+            </div>
+            
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Mobile Responsive</strong> - Optimized for all screen sizes</li>
+                <li><strong>Copy Code Blocks</strong> - Click-to-copy functionality</li>
+                <li><strong>Smooth Navigation</strong> - Anchor links with smooth scrolling</li>
+                <li><strong>Professional Styling</strong> - Modern, clean design</li>
+                <li><strong>Interactive</strong> - JavaScript-enhanced user experience</li>
+            </ul>
+            
+            <h2>Access the Documentation</h2>
+            <p>Visit <strong>GET /api/docs</strong> to see the full interactive documentation generated from the markdown file.</p>
+        </main>
+    </div>
+    
+    <script>
+        // Add copy-to-clipboard functionality
+        document.querySelectorAll('.copy-btn').forEach(function(button) {
+            button.onclick = function() {
+                const code = this.parentNode.querySelector('code');
+                navigator.clipboard.writeText(code.textContent);
+                this.textContent = 'Copied!';
+                setTimeout(() => this.textContent = 'Copy', 2000);
+            };
+        });
+    </script>
+</body>
+</html>
