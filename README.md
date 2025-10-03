@@ -10,6 +10,9 @@ MetaInstaller is a comprehensive container management system that enables secure
 - **Docker Integration**: Seamless Docker Compose integration with image loading and service management
 - **Real-time Monitoring**: WebSocket-based log streaming and progress updates
 - **File Browser**: Web-based file explorer with detailed file information and content viewing
+- **Embedded Web Browser**: Lightweight Midori browser with custom profile launched automatically
+- **X11/Wayland Detection**: Comprehensive display environment detection before browser launch
+- **Lightweight Resource Embedding**: Efficient binary resource embedding using CMake objcopy (vs Qt's memory-heavy approach)
 - **Cross-platform**: Static C++ binary with embedded dependencies for easy deployment
 - **SELinux Support**: Built-in SELinux management for enhanced security
 
@@ -21,8 +24,10 @@ MetaInstaller consists of two main components:
 - **ProjectManager**: Handles project lifecycle management and archive operations
 - **DockerManager**: Manages Docker operations and Compose integration  
 - **FileManager**: Provides file system access and web-based file browsing
-- **BrowserManager**: Launches embedded browser for web interface
+- **BrowserManager**: Launches embedded Midori browser with custom profile for web interface
 - **SELinuxManager**: Manages SELinux contexts and policies
+- **X Display Detector**: Comprehensive X11/Wayland environment detection before launching browser
+- **Resource Embedder**: Lightweight binary resource embedding using CMake objcopy (vs Qt's memory-heavy approach)
 
 ### Frontend (React/TypeScript)
 - React-based web interface for project management
@@ -113,6 +118,43 @@ make
 ./MetaInstaller-${VERSION} --test=all
 ```
 
+### Embedded Browser Architecture
+MetaInstaller uses a lightweight, efficient approach to embed the web interface directly into the C++ binary:
+
+**Resource Embedding Mechanism:**
+- Uses CMake's `objcopy` utility to embed binary resources directly into the executable
+- Resources are stored as ELF sections in the binary, avoiding Qt's memory-heavy resource system
+- Embedded resources include: Midori browser (11.5.2), React web frontend, custom browser profile, and documentation
+- The `cmake/EmbedResources.cmake` script automatically converts resource files to object files and links them into the final binary
+
+**Browser Launch Process:**
+1. **X Environment Detection**: Before launching the browser, MetaInstaller performs comprehensive X11/Wayland detection:
+   - Checks `DISPLAY` and `WAYLAND_DISPLAY` environment variables
+   - Scans for X11 socket files and lock files in `/tmp`
+   - Detects running X11/Wayland processes
+   - Performs socket connectivity tests to verify display availability
+   - Falls back gracefully if no display environment is available
+
+2. **Resource Extraction**: At runtime, embedded resources are extracted to `/tmp/metainstaller_browser/`:
+   - `midori-11.5.2.7z` - Lightweight Midori web browser
+   - `web.7z` - React frontend application
+   - `profile_midori.7z` - Custom browser profile with network offline status disabled
+   - `comprehensive_docs.html` - Complete API documentation
+   - `404_fantasy.html` - Custom 404 error page
+
+3. **Browser Launch**: Midori is launched with the custom profile pointing to the local web interface:
+   ```bash
+   /tmp/metainstaller_browser/midori/midori \
+     --profile /tmp/metainstaller_browser/profile_midori \
+     http://127.0.0.1:14040
+   ```
+
+**Advantages over Qt:**
+- **Memory Efficiency**: No Qt runtime overhead, smaller binary size
+- **Faster Compilation**: Avoids Qt's complex build system and MOC processing
+- **Static Linking**: Fully static binary with all dependencies embedded
+- **Lightweight**: Midori browser uses significantly less memory than Qt WebEngine
+
 ### Docker Build Details
 The build process uses two Docker Compose files:
 
@@ -139,15 +181,21 @@ The C++ backend is compiled with:
 - `POST /api/projects/load` - Load project from archive
 - `GET /api/projects` - List all loaded projects
 - `GET /api/projects/{name}` - Get project details
+- `GET /api/projects/{name}/services` - Get project services
+- `GET /api/projects/{name}/logs` - Get project logs
+- `GET /api/projects/{name}/status` - Get project status
 - `POST /api/projects/{name}/start` - Start project
 - `POST /api/projects/{name}/stop` - Stop project
 - `POST /api/projects/{name}/restart` - Restart project
 - `POST /api/projects/{name}/unload` - Unload project
 - `DELETE /api/projects/{name}/remove` - Remove project
+- `POST /api/projects/create-archive` - Create project archive
+- `POST /api/settings/browsing-directory` - Save browsing directory
+- `GET /api/settings/browsing-directory` - Get browsing directory
 
 #### File Management
 - `GET /api/file/list/{path}` - List directory contents (simple)
-- `GET /api/file/list-detailed/{path}` - List directory contents (detailed)
+- `POST /api/file/list-detailed` - List directory contents (detailed)
 - `GET /api/file/get/{path}` - Get file content
 
 #### Docker Management
@@ -163,9 +211,32 @@ The C++ backend is compiled with:
 - `GET /api/docker/system/integration-status` - Get system integration status
 - `GET /api/docker/installation/progress` - Get Docker installation progress
 - `POST /api/docker/install` - Install Docker
-- `POST /api/docker/service/start|stop|restart|enable|disable` - Manage Docker service
+- `POST /api/docker/service/start` - Start Docker service
+- `POST /api/docker/service/stop` - Stop Docker service
+- `POST /api/docker/service/restart` - Restart Docker service
+- `POST /api/docker/service/enable` - Enable Docker service
+- `POST /api/docker/service/disable` - Disable Docker service
 - `POST /api/docker/system/prune` - Cleanup Docker system
 - `POST /api/docker/images/pull` - Pull Docker image
+- `POST /api/docker/images/load` - Load Docker image
+- `POST /api/docker/images/save` - Save Docker image
+- `POST /api/docker/images/tag` - Tag Docker image
+- `POST /api/docker/images/build` - Build Docker image
+- `DELETE /api/docker/containers/{containerId}` - Delete container
+- `DELETE /api/docker/images/{imageId}` - Delete image
+- `POST /api/docker/containers/{containerId}/start` - Start container
+- `POST /api/docker/containers/{containerId}/stop` - Stop container
+- `POST /api/docker/containers/{containerId}/restart` - Restart container
+- `POST /api/docker/containers/{containerId}/pause` - Pause container
+- `POST /api/docker/containers/{containerId}/unpause` - Unpause container
+- `GET /api/docker/containers/{containerId}/logs` - Get container logs
+- `POST /api/docker/compose/projects` - Create Docker Compose project
+- `DELETE /api/docker/compose/projects/{projectName}` - Delete Docker Compose project
+- `POST /api/docker/compose/projects/{projectName}/up` - Start Docker Compose project
+- `POST /api/docker/compose/projects/{projectName}/down` - Stop Docker Compose project
+- `POST /api/docker/compose/projects/{projectName}/restart` - Restart Docker Compose project
+- `GET /api/docker/compose/projects/{projectName}/services` - Get Docker Compose project services
+- `POST /api/docker/compose/projects/{projectName}/services/{serviceName}/{action}` - Manage Docker Compose service
 - `POST /api/test/sudo` - Test and set sudo password
 - `DELETE /api/docker/uninstall` - Uninstall Docker
 
@@ -173,6 +244,16 @@ The C++ backend is compiled with:
 - `GET /api/version` - Get MetaInstaller version
 - `GET /api/docs` - Get comprehensive API documentation (HTML)
 - `GET /test` - Health check endpoint
+
+#### SELinux Management
+- `GET /api/selinux/info` - Get SELinux information
+- `GET /api/selinux/status` - Get SELinux status
+- `POST /api/selinux/disable` - Disable SELinux
+- `POST /api/selinux/enable` - Enable SELinux
+- `POST /api/selinux/enforcing` - Set SELinux to enforcing mode
+- `POST /api/selinux/permissive` - Set SELinux to permissive mode
+- `POST /api/selinux/restore-context` - Restore SELinux context
+- `POST /api/selinux/apply-context` - Apply SELinux context
 
 ### WebSocket Endpoints
 - `/ws/logs` - Real-time operation logs
