@@ -45,11 +45,40 @@ MetaInstaller uses a multi-stage Docker build process to create a fully static b
 2. **C++ Backend Build**: Compiles the C++ backend in an Alpine Linux container with full static linking
 3. **Final Package**: Combines both components into a single executable 7z archive
 
+### Building Base Docker Images
+Before building MetaInstaller from source, you may need to build the required base Docker images. These images provide the build environments for both the web frontend and C++ backend components.
+
+The base images are defined in `docker-compose-create-baseimage.yml` and configured through `.env.baseimage`:
+
+- **C++ Builder Image**: `metainstaller-builder:1.0.0` - Based on Alpine Linux 3.22 with all C++ build dependencies
+- **Web Builder Image**: `metainstaller-baseimage-web:1.0.0` - Based on Node.js 18 with web build tools
+
+To build these base images locally:
+
+```bash
+# Build base Docker images
+make baseimage
+```
+
+This command:
+1. Sources the `.env.baseimage` configuration file
+2. Uses Docker Compose with `docker-compose-create-baseimage.yml` to build two services:
+   - `base_os`: Builds the C++ backend build environment from the root `Dockerfile`
+   - `web_build`: Builds the web frontend build environment from `frontend/Dockerfile`
+3. Tags the resulting images according to the configuration in `.env.baseimage`
+
+The base images are typically only needed when:
+- Setting up a new development environment
+- Modifying the build environment requirements
+- Working offline without access to the pre-built images on the registry
+
+Note: The build process is configured to use local images by default, so building base images is not required for regular development unless you've made changes to the Dockerfiles or need to update dependencies.
+
 ### Build from Source
 ```bash
 # Clone the repository
-git clone ssh://mojtabagit@127.0.0.1:22242/container_installer_rest
-cd container_installer_rest
+git clone https://github.com/metaprocess/metainstaller.git
+cd metainstaller
 
 # Build the complete MetaInstaller package (recommended)
 make
